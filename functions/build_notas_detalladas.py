@@ -22,7 +22,7 @@ async def build_notas_detalladas(transcript):
 
     try:
         if "claude" in config["resumeModel"]:
-            resume_model = ChatAnthropic(model=config["resumeModel"], max_tokens=2048)
+            resume_model = ChatAnthropic(model=config["resumeModel"], max_tokens=3072)
 
         if "gpt" in config["resumeModel"]:
             resume_model = ChatOpenAI(model=config["resumeModel"])
@@ -31,7 +31,7 @@ async def build_notas_detalladas(transcript):
             # max_tokens por defecto es 1024, si intenta generar una respuesta mas grande simplemente
             # la trunca, el numero maximo depende del modelo
             condensa_model = ChatAnthropic(
-                model=config["condensaModel"], max_tokens=3072
+                model=config["condensaModel"], max_tokens=8192
             )
 
         if "gpt" in config["condensaModel"]:
