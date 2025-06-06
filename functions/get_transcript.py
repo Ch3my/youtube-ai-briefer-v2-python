@@ -2,6 +2,7 @@ import asyncio
 from functions.send_message import send_message
 from functions.whisper_transcript import whisper_transcript
 from functions.get_video_id import get_video_id
+import logging
 from youtube_transcript_api import (
     YouTubeTranscriptApi,
     TranscriptsDisabled,
@@ -23,7 +24,7 @@ async def get_transcript(data):
                 {
                     "action": "message",
                     "msgCode": "useWhisper",
-                    "msg":"La transcripcion esta desactivada para este video",
+                    "msg": "La transcripcion esta desactivada para este video",
                 }
             )
             return None
@@ -37,8 +38,31 @@ async def get_transcript(data):
                 }
             )
             return None
+    except Exception as e:
+        # This is the crucial part for catching the "no element found" error
+        logging.error(
+            f"An unexpected error occurred while getting YouTube transcript for {yt_vide_id}: {e}",
+            exc_info=True,
+        )
+        await send_message(
+            {
+                "action": "message",
+                "msgCode": "cantGetTranscript",
+                "msg": f"An unexpected error occurred while getting YouTube transcript for {yt_vide_id}: {e}",
+            }
+        )
+        raise
 
     if transcript is None and data.get("whisperConfirmed") == True:
         transcript = await whisper_transcript(data.get("url"))
+
+    if transcript is None:
+        await send_message(
+            {
+                "action": "message",
+                "msgCode": "cantGetTranscript",
+                "msg": f"An unexpected error occurred while getting YouTube transcript for {yt_vide_id}: {e}",
+            }
+        )
 
     return transcript
