@@ -3,7 +3,8 @@ import re
 def get_video_id(url):
     # Regular expression pattern to find the video ID
     # pattern = r'v=(\w+)'
-    pattern = r'v=(-?\w+)' # include "-" in the video ID
+    # pattern = r'v=(-?\w+)' # include "-" in the video ID
+    pattern = r'(?:v=|\/)([0-9A-Za-z_-]{11})'
 
     # Search for the pattern in the URL
     match = re.search(pattern, url)
