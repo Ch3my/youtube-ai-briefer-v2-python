@@ -1,18 +1,30 @@
 import asyncio
 import websockets
 import json
-
+import sys
 from build_video_data import build_video_data
 from globals import Globals
 from query_rag import query_rag
 
-globals = Globals()
+globals_instance = Globals()
+
+if __name__ == "__main__":
+    if len(sys.argv) > 1:
+        # The first argument (sys.argv[0]) is the script name itself.
+        # The app data directory will be the second argument (sys.argv[1]).
+        app_data_dir_from_tauri = sys.argv[1]
+        globals_instance.app_data_dir = app_data_dir_from_tauri
+        print(f"Python sidecar: Received app data directory from Tauri: {globals_instance.app_data_dir}")
+    else:
+        print("Python sidecar: No app data directory argument provided from Tauri.")
+        # You might want to set a default or handle this error case
+        globals_instance.app_data_dir = None # Or a suitable default path
 
 
 async def handle_connection(websocket):
     # Register the new client
     # Test Video: https://www.youtube.com/watch?v=XOqGDLy1IGU
-    globals.connected_clients.add(websocket)
+    globals_instance.connected_clients.add(websocket)
     try:
         while True:
             # Receive message from client
@@ -34,7 +46,7 @@ async def handle_connection(websocket):
         print(f"Error: {e}")
     finally:
         # Unregister the client on disconnect
-        globals.connected_clients.remove(websocket)
+        globals_instance.connected_clients.remove(websocket)
 
 
 async def handle_build(data):

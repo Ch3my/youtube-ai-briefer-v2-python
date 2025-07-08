@@ -13,3 +13,4 @@ class Globals(metaclass=SingletonMeta):
     store = {}
     chat_id = ""
     connected_clients = set()
+    app_data_dir = None
