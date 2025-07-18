@@ -13,8 +13,8 @@ def get_video_id(url):
         video_id = match.group(1)
         # If the first character is a "-", ignore or delete it
         # YouTubeTranscriptApi does not like "-" at the beggining 
-        if video_id.startswith('-'):
-            video_id = video_id[1:]
+        # if video_id.startswith('-'):
+        #     video_id = video_id[1:]
         return video_id
     else:
         return None
